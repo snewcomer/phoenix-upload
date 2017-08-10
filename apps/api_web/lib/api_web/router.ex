@@ -9,5 +9,6 @@ defmodule ApiWeb.Router do
     pipe_through :api
 
     post "/upload-signature", UploadSignatureController, :create
+    post "/download-signature", DownloadSignatureController, :request
   end
 end

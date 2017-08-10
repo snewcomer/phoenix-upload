@@ -43,7 +43,8 @@ defmodule ApiWeb.Mixfile do
       {:gettext, "~> 0.11"},
       {:api, in_umbrella: true},
       {:cowboy, "~> 1.0"},
-      {:timex, "~> 3.1"}
+      {:timex, "~> 3.1"},
+      {:httpoison, "~> 0.12"}
     ]
   end
 
