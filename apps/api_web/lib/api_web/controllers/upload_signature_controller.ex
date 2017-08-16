@@ -1,6 +1,9 @@
 defmodule ApiWeb.UploadSignatureController do
   use ApiWeb, :controller
 
+  @doc """
+  All we are doing is giving the frontend a signed url to allow the browser to complete a direct upload
+  """
   def create(conn, %{"filename" => filename, "mimetype" => mimetype}) do
     conn
     |> put_status(:created)

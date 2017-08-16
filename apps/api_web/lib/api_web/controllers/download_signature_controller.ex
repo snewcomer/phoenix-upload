@@ -1,11 +1,52 @@
 defmodule ApiWeb.DownloadSignatureController do
   use ApiWeb, :controller
 
-  def request(conn, %{"filepath" => filepath}) do
-    case HTTPoison.get filepath do
-      {:ok, %{status_code: 200, body: body}} -> {:ok, body}
-      {:error} -> {:error, :s3_httppoison_error}
-    end
+  @doc """
+  Builds URL and returns to browser to force download
+  http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#RESTAuthenticationQueryStringAuth
+  """
+  def request(conn, %{"path" => path}) do
+    conn
+    |> put_status(:created)
+    |> render("show.json", body: sign(path))
+  end
+
+  defp sign(path) do
+    "https://#{System.get_env("S3_BUCKET_NAME")}.s3.amazonaws.com/#{path}"
+    |> add_access_key
+    |> add_expiration_time
+    |> add_signature(path)
+  end
+
+  defp add_access_key(url) do
+    url <> "?AWSAccessKeyId=" <> System.get_env("AWS_ACCESS_KEY_ID")
+  end
+
+  defp add_signature(url, path) do
+    url <> "?Signature=" <> hmac_sha1(System.get_env("AWS_SECRET_ACCESS_KEY"), string_to_sign(path))
+  end
+
+  defp add_expiration_time(url) do
+    url <> "?Expires=#{now_plus()}"
+  end
+
+  defp now_plus do
+    import Timex
+    now()
+    |> shift(minutes: 60)
+    |> DateTime.to_unix
+  end
+
+  defp hmac_sha1(secret, msg) do
+    :crypto.hmac(:sha, secret, msg)
+    |> Base.encode64
+  end
+
+  defp string_to_sign(path) do
+    ["GET", "", "",  now_plus(), "", "/" <> System.get_env("S3_BUCKET_NAME") <> path] 
+    |> Enum.join("\n")
+    |> Poison.encode!
+    |> Base.encode64
   end
 
 end
