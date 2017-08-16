@@ -12,6 +12,7 @@ defmodule ApiWeb.DownloadSignatureController do
   end
 
   defp sign(path) do
+    expires_at = now_plus()
     "https://#{System.get_env("S3_BUCKET_NAME")}.s3.amazonaws.com/#{path}"
     |> add_access_key
     |> add_expiration_time(expires_at)
@@ -40,6 +41,7 @@ defmodule ApiWeb.DownloadSignatureController do
   defp hmac_sha1(secret, msg) do
     :crypto.hmac(:sha, secret, msg)
     |> Base.encode64
+    |> URI.encode_www_form()
   end
 
   defp string_to_sign(path, expires_at) do
