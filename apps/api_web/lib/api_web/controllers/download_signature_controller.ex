@@ -14,20 +14,20 @@ defmodule ApiWeb.DownloadSignatureController do
   defp sign(path) do
     "https://#{System.get_env("S3_BUCKET_NAME")}.s3.amazonaws.com/#{path}"
     |> add_access_key
-    |> add_expiration_time
-    |> add_signature(path)
+    |> add_expiration_time(expires_at)
+    |> add_signature(path, expires_at)
   end
 
   defp add_access_key(url) do
     url <> "?AWSAccessKeyId=" <> System.get_env("AWS_ACCESS_KEY_ID")
   end
 
-  defp add_signature(url, path) do
-    url <> "?Signature=" <> hmac_sha1(System.get_env("AWS_SECRET_ACCESS_KEY"), string_to_sign(path))
+  defp add_signature(url, path, expires_at) do
+    url <> "?Signature=" <> hmac_sha1(System.get_env("AWS_SECRET_ACCESS_KEY"), string_to_sign(path, expires_at))
   end
 
-  defp add_expiration_time(url) do
-    url <> "?Expires=#{now_plus()}"
+  defp add_expiration_time(url, expires_at) do
+    url <> "?Expires=#{expires_at}"
   end
 
   defp now_plus do
@@ -42,11 +42,9 @@ defmodule ApiWeb.DownloadSignatureController do
     |> Base.encode64
   end
 
-  defp string_to_sign(path) do
-    ["GET", "", "",  now_plus(), "", "/" <> System.get_env("S3_BUCKET_NAME") <> path] 
+  defp string_to_sign(path, expires_at) do
+    ["GET", "", "", expires_at, "", "/" <> System.get_env("S3_BUCKET_NAME") <> path] 
     |> Enum.join("\n")
-    |> Poison.encode!
-    |> Base.encode64
   end
 
 end
