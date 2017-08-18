@@ -40,6 +40,7 @@ defmodule ApiWeb.Mixfile do
       {:phoenix, "~> 1.3.0"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
+      {:cors_plug, "~> 1.3"},
       {:gettext, "~> 0.11"},
       {:api, in_umbrella: true},
       {:cowboy, "~> 1.0"},

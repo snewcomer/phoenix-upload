@@ -23,6 +23,10 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+config :mime, :types, %{
+  "application/vnd.api+json" => ["json-api"]
+}
+
 config :api_web, :generators,
   context_app: :api
 
