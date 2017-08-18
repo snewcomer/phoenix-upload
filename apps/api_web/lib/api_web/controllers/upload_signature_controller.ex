@@ -12,16 +12,20 @@ defmodule ApiWeb.UploadSignatureController do
 
   defp sign(filename, mimetype) do
     policy = policy(filename, mimetype)
+    bucket = System.get_env("S3_BUCKET_NAME")
 
     %{
-      key: filename,
-      'Content-Type': mimetype,
-      acl: "public-read",
-      success_action_status: "201",
-      action: "https://s3.amazonaws.com/#{System.get_env("S3_BUCKET_NAME")}",
-      'AWSAccessKeyId': System.get_env("AWS_ACCESS_KEY_ID"),
-      policy: policy,
-      signature: hmac_sha1(System.get_env("AWS_SECRET_ACCESS_KEY"), policy)
+      url: "https://#{bucket}.s3.amazonaws.com",
+      credentials: %{
+        key: filename,
+        'Content-Type': mimetype,
+        acl: "public-read",
+        success_action_status: "201",
+        action: "https://s3.amazonaws.com/#{bucket}",
+        'AWSAccessKeyId': System.get_env("AWS_ACCESS_KEY_ID"),
+        policy: policy,
+        signature: hmac_sha1(System.get_env("AWS_SECRET_ACCESS_KEY"), policy)
+      }
     }
   end
 
