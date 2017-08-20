@@ -15,7 +15,6 @@ defmodule ApiWeb.UploadSignatureControllerTest do
     assert credentials["Content-Type"] == mimetype
     assert credentials["acl"] == "public-read"
     assert credentials["success_action_status"] == "201"
-    assert credentials["action"] =~ "s3.amazonaws.com"
     assert credentials["AWSAccessKeyId"]
     assert credentials["policy"]
     assert credentials["signature"]

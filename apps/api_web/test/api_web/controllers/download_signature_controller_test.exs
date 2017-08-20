@@ -2,10 +2,10 @@ defmodule ApiWeb.DownloadSignatureControllerTest do
   use ApiWeb.ConnCase
 
   test "POST to download signed url", %{conn: conn} do
-    path = "/probablyacat.jpg"
+    path = "probablyacat.jpg"
 
     conn =
-      post conn, download_signature_path(conn, :request), %{ path: path }
+      post conn, download_signature_path(conn, :request), %{ filepath: path }
 
     response = json_response(conn, 201)
     assert response =~ path

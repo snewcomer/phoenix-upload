@@ -5,7 +5,7 @@ defmodule ApiWeb.DownloadSignatureController do
   Builds URL and returns to browser to force download
   http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#RESTAuthenticationQueryStringAuth
   """
-  def request(conn, %{"path" => path}) do
+  def request(conn, %{"filepath" => path}) do
     conn
     |> put_status(:created)
     |> render("show.json", body: sign(path))
