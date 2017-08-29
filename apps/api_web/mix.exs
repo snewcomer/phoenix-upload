@@ -44,8 +44,11 @@ defmodule ApiWeb.Mixfile do
       {:gettext, "~> 0.11"},
       {:api, in_umbrella: true},
       {:cowboy, "~> 1.0"},
+      {:ex_aws, "~> 1.1"},
+      {:sweet_xml, "~> 0.6.5"},
       {:timex, "~> 3.1"},
-      {:httpoison, "~> 0.12"}
+      {:httpoison, "~> 0.12"},
+      {:uuid, "~> 1.1"}
     ]
   end
 
